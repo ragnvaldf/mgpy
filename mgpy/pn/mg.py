@@ -1,25 +1,24 @@
 from .preconditions import SimplePreCondition, SiphonPreCondition
-from .transition import TState
+from .transition import Transition, TState
 from .place import Place, InitialPlace
 
 
 class MarkedGraph(object):
     def __init__(self, actions):
-        self.actions = actions  # [transition_idx] = action
+        self.transitions = [Transition(action) for action in actions]  # [transition_idx] = transition
+        self.places = []  # [place_idx] = place
         self.action_count = len(actions)
         self.dependents = [[] for _ in range(self.action_count)]  # [dependency_idx] = [dependent_idx1...]
-        self.places = []
         self.transition_input_places = [[] for _ in range(self.action_count)]  # [transition_idx] = [place_idx1...]
         self.transition_output_places = [[] for _ in range(self.action_count)]  # [transition_idx] = [place_idx1...]
-        self.transition_states = [TState.DISABLED] * self.action_count  # [transition_idx] = TState
 
     def build(self):
         for transition_idx in range(self.action_count):
-            for precondition in self.actions[transition_idx].preconditions:
+            for precondition in self.transitions[transition_idx].action.preconditions:
                 if isinstance(precondition, SimplePreCondition):
-                    assert precondition.func in [action.func for action in self.actions], \
+                    assert precondition.func in [transition.action.func for transition in self.transitions], \
                         '{} not defined as an action'.format(precondition.func.__name__)
-                    dependency_idx = [action.func for action in self.actions].index(precondition.func)
+                    dependency_idx = [transition.action.func for transition in self.transitions].index(precondition.func)
                     place_idx = self.__make_place(precondition.name)
 
                     self.dependents[dependency_idx].append(transition_idx)
@@ -30,20 +29,25 @@ class MarkedGraph(object):
                     self.transition_input_places[transition_idx].append(place_idx)
 
     def refresh_transition_states(self):
-        for transition_idx in range(self.action_count):
-            self.transition_states[transition_idx] = TState.ENABLED \
-                if self.__can_fire(transition_idx) else TState.DISABLED
+        for transition_idx, transition in enumerate(self.transitions):
+            if self.__can_fire(transition_idx):
+                transition.enable()
+            else:
+                transition.disable()
 
     def get_state_dict(self):
         d = {}
-        for transition_idx, action in enumerate(self.actions):
-            d[action.name] = {}
-            d[action.name]['State'] = str(self.transition_states[transition_idx])
-            d[action.name]['Input'] = {}
+        for transition_idx, transition in enumerate(self.transitions):
+            d[transition.action.name] = {}
+            d[transition.action.name]['State'] = str(transition.state())
+            d[transition.action.name]['Input'] = {}
             for place_idx in self.transition_input_places[transition_idx]:
-                d[action.name]['Input'][self.places[place_idx].name] = self.places[place_idx].token_count()
+                d[transition.action.name]['Input'][self.places[place_idx].name] = self.places[place_idx].token_count()
 
         return d
+
+    def get_enabled_transitions(self):
+        return [transition_idx for transition_idx, transition in enumerate(self.transitions) if transition.enabled()]
 
     def __make_place(self, name, token_count=None):
         place_idx = len(self.places)
@@ -55,10 +59,15 @@ class MarkedGraph(object):
         return place_idx
 
     def get_transition_state(self, transition_idx):
-        return self.transition_states[transition_idx]
+        return self.transitions[transition_idx].state()
 
     def set_transition_state(self, transition_idx, state):
-        self.transition_states[transition_idx] = state
+        if state is TState.ENABLED:
+            self.transitions[transition_idx].enable()
+        elif state is TState.DISABLED:
+            self.transitions[transition_idx].disable()
+        elif state is TState.FIRING:
+            self.transitions[transition_idx].fire()
 
     def get_input_places(self, transition_idx):
         return self.transition_input_places[transition_idx]
@@ -67,7 +76,7 @@ class MarkedGraph(object):
         return self.places[place_idx].remove_token()
 
     def get_function_for_transition(self, transition_idx):
-        return self.actions[transition_idx].get_func()
+        return self.transitions[transition_idx].action.get_func()
 
     def get_output_places(self, transition_idx):
         return self.transition_output_places[transition_idx]
@@ -81,7 +90,7 @@ class MarkedGraph(object):
             enableable.append(transition_idx)
 
         for dependent_idx in self.dependents[transition_idx]:
-            if self.transition_states[dependent_idx] is TState.DISABLED and self.__can_fire(dependent_idx):
+            if self.transitions[dependent_idx].disabled() and self.__can_fire(dependent_idx):
                 enableable.append(dependent_idx)
 
         return enableable

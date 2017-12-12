@@ -6,8 +6,7 @@ class PN(object):
         self.graph = graph
 
     def get_enabled_transitions(self):
-        return [transition_idx for transition_idx, transition_state in enumerate(self.graph.transition_states)
-                if transition_state is TState.ENABLED]
+        return self.graph.get_enabled_transitions()
 
     def start_firing(self, transition_idx):
         assert self.graph.get_transition_state(transition_idx) == TState.ENABLED
