@@ -1,3 +1,4 @@
+from ..pn.mg import MarkedGraph
 from ..pn.pn import PN
 
 
@@ -11,8 +12,8 @@ class PNBuilder(object):
         return self
 
     def build(self):
-        pn = PN(self.actions)
-        pn.build()
-        pn.refresh_transition_states()
+        mg = MarkedGraph(self.actions)
+        mg.build()
+        mg.refresh_transition_states()
 
-        return pn
+        return PN(mg)
