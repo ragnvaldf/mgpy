@@ -14,9 +14,7 @@ class PN(object):
         self.graph.set_transition_state(transition_idx, TState.FIRING)
 
         input_places = self.graph.get_input_places(transition_idx)
-        tokens = {self.graph.place_names[place_idx]: token for (place_idx, token) in
-                  [(place_idx, self.graph.get_token_from_place(place_idx)) for place_idx in input_places]
-                  if self.graph.is_real_place(place_idx)}
+        tokens = dict([pair for pair in self.__get_tokens_from_places(input_places) if len(pair) == 2])
         func = self.graph.get_function_for_transition(transition_idx)
 
         return func, tokens
@@ -31,3 +29,6 @@ class PN(object):
         [self.graph.set_transition_state(transition, TState.ENABLED) for transition in enableable]
 
         return enableable
+
+    def __get_tokens_from_places(self, input_places):
+        return [self.graph.get_token_from_place(place_idx) for place_idx in input_places]
