@@ -7,23 +7,22 @@ class MarkedGraph(object):
     def __init__(self, actions):
         self.transitions = [Transition(action, idx) for idx, action in enumerate(actions)]
         self.places = []  # [place_idx] = place
-        self.action_count = len(actions)
-        self.dependents = [[] for _ in range(self.action_count)]  # [dependency_idx] = [dependent_idx1...]
+        self.dependents = [[] for _ in range(len(actions))]  # [dependency_idx] = [dependent_idx1...]
 
     def build(self):
-        for transition_idx in range(self.action_count):
-            for precondition in self.transitions[transition_idx].action.preconditions:
+        for transition in self.transitions:
+            for precondition in transition.action.preconditions:
                 if isinstance(precondition, SimplePreCondition):
                     place = Place(precondition.name)
 
                     dependency_idx = [transition.action.func for transition in self.transitions].index(precondition.func)
-                    self.dependents[dependency_idx].append(transition_idx)
+                    self.dependents[dependency_idx].append(transition.idx)
                     self.transitions[dependency_idx].output_places.append(place)
                 elif isinstance(precondition, SiphonPreCondition):
                     place = InitialPlace(precondition)
 
                 self.places.append(place)
-                self.transitions[transition_idx].input_places.append(place)
+                transition.input_places.append(place)
 
     def refresh_transition_states(self):
         for transition in self.transitions:
