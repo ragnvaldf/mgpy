@@ -19,9 +19,9 @@ class Place(object):
 
 
 class InitialPlace(Place):
-    def __init__(self, name, token_count):
-        Place.__init__(self, name)
-        [Place.add_token(self, None) for _ in range(token_count)]
+    def __init__(self, siphon_precondition):
+        Place.__init__(self, siphon_precondition.name)
+        [Place.add_token(self, None) for _ in range(siphon_precondition.token_count)]
 
     def add_token(self, token):
         assert None, 'Initial place {} cannot store tokens'.format(self.name)

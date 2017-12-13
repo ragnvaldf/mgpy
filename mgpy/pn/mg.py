@@ -15,18 +15,17 @@ class MarkedGraph(object):
     def build(self):
         for transition_idx in range(self.action_count):
             for precondition in self.transitions[transition_idx].action.preconditions:
-                if isinstance(precondition, SimplePreCondition):
-                    assert precondition.func in [transition.action.func for transition in self.transitions], \
-                        '{} not defined as an action'.format(precondition.func.__name__)
-                    dependency_idx = [transition.action.func for transition in self.transitions].index(precondition.func)
-                    place_idx = self.__make_place(precondition.name)
+                place_idx = len(self.places)  # Each precondition requires a place to store tokens
+                self.transition_input_places[transition_idx].append(place_idx)
 
+                if isinstance(precondition, SimplePreCondition):
+                    self.places.append(Place(precondition.name))
+
+                    dependency_idx = [transition.action.func for transition in self.transitions].index(precondition.func)
                     self.dependents[dependency_idx].append(transition_idx)
-                    self.transition_input_places[transition_idx].append(place_idx)
                     self.transition_output_places[dependency_idx].append(place_idx)
                 elif isinstance(precondition, SiphonPreCondition):
-                    place_idx = self.__make_place(precondition.name, precondition.token_count)
-                    self.transition_input_places[transition_idx].append(place_idx)
+                    self.places.append(InitialPlace(precondition))
 
     def refresh_transition_states(self):
         for transition in self.transitions:
@@ -46,15 +45,6 @@ class MarkedGraph(object):
 
     def get_enabled_transitions(self):
         return [transition for transition in self.transitions if transition.enabled()]
-
-    def __make_place(self, name, token_count=None):
-        place_idx = len(self.places)
-        if token_count is None:
-            self.places.append(Place(name))
-        else:
-            self.places.append(InitialPlace(name, token_count))
-
-        return place_idx
 
     def get_input_places(self, transition):
         return self.transition_input_places[transition.idx]
