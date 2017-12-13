@@ -5,6 +5,16 @@ class PN(object):
     def get_enabled_transitions(self):
         return self.graph.get_enabled_transitions()
 
+    def get_state_dict(self):
+        d = {}
+        for transition in self.graph.transitions:
+            d[transition.action.name] = {}
+            d[transition.action.name]['State'] = str(transition.state())
+            for place in transition.input_places:
+                d[transition.action.name][place.name] = place.token_count()
+
+        return d
+
     def start_firing(self, transition):
         transition.fire()
         func = transition.action.get_func()
