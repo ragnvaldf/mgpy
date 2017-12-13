@@ -24,9 +24,6 @@ class Transition(object):
     def firing(self):
         return self.__state == TState.FIRING
 
-    def state(self):
-        return self.__state
-
     def has_token_in_each_input(self):
         for place in self.input_places:
             if place.empty():  # Number of tokens available
