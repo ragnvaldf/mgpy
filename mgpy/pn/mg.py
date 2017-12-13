@@ -24,15 +24,6 @@ class MarkedGraph(object):
             if transition.has_token_in_each_input():
                 transition.enable()
 
-    def get_transitions_enabled_after(self, transition):
-        enableable = [depending_transition for depending_transition in transition.dependents
-                      if depending_transition.disabled() and depending_transition.has_token_in_each_input()]
-
-        if transition.has_token_in_each_input():
-            enableable.append(transition)
-
-        return enableable
-
     def __find_transition_by_func(self, func):
         for transition in self.transitions:
             if transition.action.func == func:

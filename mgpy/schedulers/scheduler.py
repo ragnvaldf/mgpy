@@ -7,7 +7,7 @@ class Scheduler(object):
         self._print_all_states_full = print_all_states_full
 
     def _start_firing(self, transition):
-        func, params = self._pn.start_firing(transition)
+        func, params = transition.start_firing()
 
         if self._print_all_states_full:
             self.__print_state_full()
@@ -23,7 +23,7 @@ class Scheduler(object):
         return token
 
     def _complete_firing(self, transition, token):
-        new_enabled = self._pn.complete_firing(transition, token)
+        new_enabled = transition.complete_firing(token)
 
         if self._print_all_states_full:
             self.__print_state_full()

@@ -48,3 +48,29 @@ class Transition(object):
                 return False
 
         return True
+
+    def start_firing(self):
+        self.fire()
+        func = self.action.get_func()
+        tokens = dict([pair for pair in [place.remove_token() for place in self.input_places]
+                       if len(pair) == 2])
+
+        return func, tokens
+
+    def complete_firing(self, token):
+        [place.add_token(token) for place in self.output_places]
+
+        self.disable()
+        enableable = self.get_transitions_enabled_after()
+        [enableable_transition.enable() for enableable_transition in enableable]
+
+        return enableable
+
+    def get_transitions_enabled_after(self):
+        enableable = [depending_transition for depending_transition in self.dependents
+                      if depending_transition.disabled() and depending_transition.has_token_in_each_input()]
+
+        if self.has_token_in_each_input():
+            enableable.append(self)
+
+        return enableable
