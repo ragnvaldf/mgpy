@@ -3,7 +3,7 @@ class PN(object):
         self.graph = graph
 
     def get_enabled_transitions(self):
-        return self.graph.get_enabled_transitions()
+        return [transition for transition in self.graph.transitions if transition.enabled()]
 
     def get_state_dict(self):
         d = {}

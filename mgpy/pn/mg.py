@@ -24,9 +24,6 @@ class MarkedGraph(object):
             if self.__can_fire(transition):
                 transition.enable()
 
-    def get_enabled_transitions(self):
-        return [transition for transition in self.transitions if transition.enabled()]
-
     def get_transitions_enabled_after(self, transition):
         enableable = [depending_transition for depending_transition in transition.dependents
                       if depending_transition.disabled() and self.__can_fire(depending_transition)]
