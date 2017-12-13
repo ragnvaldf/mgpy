@@ -9,12 +9,12 @@ class SimpleScheduler(Scheduler):
         active = self._pn.get_enabled_transitions()
 
         while len(active) > 0:
-            transition_idx = active.pop(0)
+            transition = active.pop(0)
 
-            func, params = self._start_firing(transition_idx)
+            func, params = self._start_firing(transition)
             token = self._run_function(func, params)
 
-            new_enabled = self._complete_firing(transition_idx, token)
+            new_enabled = self._complete_firing(transition, token)
             active.extend(new_enabled)
 
         return self

@@ -36,8 +36,8 @@ class ThreadedScheduler(Scheduler):
                     if not self.alive:
                         return
 
-                transition_idx = self.enabled_transitions.pop(0)
-                func, params = self._start_firing(transition_idx)
+                transition = self.enabled_transitions.pop(0)
+                func, params = self._start_firing(transition)
 
                 if len(self.enabled_transitions) > 0:
                     self.cv.notify()
@@ -45,5 +45,5 @@ class ThreadedScheduler(Scheduler):
             token = self._run_function(func, params)
 
             with self.cv:
-                new_enabled = self._complete_firing(transition_idx, token)
+                new_enabled = self._complete_firing(transition, token)
                 self.enabled_transitions.extend(new_enabled)
