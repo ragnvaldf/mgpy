@@ -1,5 +1,5 @@
-from ..pn.preconditions import SimplePreCondition, SiphonPreCondition
-from ..pn.actions import Action, MockAction
+from mgpy.pn.preconditions import SimplePreCondition, SiphonPreCondition
+from mgpy.pn.actions import Action, MockAction
 
 
 class ActionBuilder(object):
