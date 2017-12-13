@@ -11,13 +11,13 @@ class MarkedGraph(object):
         for transition in self.transitions:
             for precondition in transition.action.preconditions:
                 if isinstance(precondition, SimplePreCondition):
-                    place = Place(precondition.name)
+                    place = Place(precondition.name, transition)
 
                     depending_transition = self.__find_transition_by_func(precondition.func)
                     depending_transition.dependents.append(transition)
                     depending_transition.output_places.append(place)
                 else:
-                    place = InitialPlace(precondition)
+                    place = InitialPlace(precondition, transition)
 
                 transition.input_places.append(place)
 

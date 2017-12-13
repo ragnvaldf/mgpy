@@ -1,7 +1,8 @@
 class Place(object):
-    def __init__(self, name):
+    def __init__(self, name, output_transition):
         self.name = name
         self.__tokens = []
+        self.output_transition = output_transition
 
     def add_token(self, token):
         self.__tokens.append(token)
@@ -19,8 +20,8 @@ class Place(object):
 
 
 class InitialPlace(Place):
-    def __init__(self, siphon_precondition):
-        Place.__init__(self, siphon_precondition.name)
+    def __init__(self, siphon_precondition, output_transition):
+        Place.__init__(self, siphon_precondition.name, output_transition)
         [Place.add_token(self, None) for _ in range(siphon_precondition.token_count)]
 
     def add_token(self, token):
