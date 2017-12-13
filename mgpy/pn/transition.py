@@ -8,9 +8,8 @@ class TState(IntEnum):
 
 
 class Transition(object):
-    def __init__(self, action, transition_idx):
+    def __init__(self, action):
         self.action = action
-        self.idx = transition_idx
         self.__state = TState.DISABLED
         self.input_places = []
         self.output_places = []

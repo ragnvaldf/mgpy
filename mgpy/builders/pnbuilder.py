@@ -14,6 +14,5 @@ class PNBuilder(object):
     def build(self):
         mg = MarkedGraph(self.actions)
         mg.build()
-        mg.refresh_transition_states()
 
         return PN(mg)
