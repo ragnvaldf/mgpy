@@ -32,8 +32,6 @@ class MarkedGraph(object):
         for transition_idx, transition in enumerate(self.transitions):
             if self.__can_fire(transition_idx):
                 transition.enable()
-            else:
-                transition.disable()
 
     def get_state_dict(self):
         d = {}
