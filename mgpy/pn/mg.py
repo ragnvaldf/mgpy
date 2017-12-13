@@ -14,15 +14,13 @@ class MarkedGraph(object):
                     place = Place(precondition.name, transition)
 
                     depending_transition = self.__find_transition_by_func(precondition.func)
-                    depending_transition.dependents.append(transition)
                     depending_transition.output_places.append(place)
                 else:
                     place = InitialPlace(precondition, transition)
 
                 transition.input_places.append(place)
 
-            if transition.has_token_in_each_input():
-                transition.enable()
+            transition.try_enable()
 
     def __find_transition_by_func(self, func):
         for transition in self.transitions:
