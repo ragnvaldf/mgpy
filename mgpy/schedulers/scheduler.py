@@ -9,29 +9,27 @@ class Scheduler(object):
     def _start_firing(self, transition):
         func, params = transition.start_firing()
 
-        if self._print_all_states_full:
-            self.__print_state_full()
+        self.__print_state_full()
 
         return func, params
 
     def _run_function(self, func, params):
         token = func(**params)
 
-        if self._print_all_states_full:
-            self.__print_state_full()
+        self.__print_state_full()
 
         return token
 
     def _complete_firing(self, transition, token):
         new_enabled = transition.complete_firing(token)
 
-        if self._print_all_states_full:
-            self.__print_state_full()
+        self.__print_state_full()
 
         return new_enabled
 
     def __print_state_full(self):
-        print(json.dumps(self._pn.get_state_dict(), indent=4))
+        if self._print_all_states_full:
+            print(json.dumps(self._pn.get_state_dict(), indent=4))
 
     def run(self):
         return self
