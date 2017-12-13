@@ -21,24 +21,17 @@ class MarkedGraph(object):
 
                 transition.input_places.append(place)
 
-            if self.__can_fire(transition):
+            if transition.has_token_in_each_input():
                 transition.enable()
 
     def get_transitions_enabled_after(self, transition):
         enableable = [depending_transition for depending_transition in transition.dependents
-                      if depending_transition.disabled() and self.__can_fire(depending_transition)]
+                      if depending_transition.disabled() and depending_transition.has_token_in_each_input()]
 
-        if self.__can_fire(transition):
+        if transition.has_token_in_each_input():
             enableable.append(transition)
 
         return enableable
-
-    def __can_fire(self, transition):
-        for place in transition.input_places:
-            if place.empty():  # Number of tokens available
-                return False
-
-        return True
 
     def __find_transition_by_func(self, func):
         for transition in self.transitions:
