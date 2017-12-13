@@ -9,27 +9,11 @@ class Transition(object):
         self.__state = TState.DISABLED
 
     def try_enable(self):
-        if self.disabled() and self.has_token_in_each_input():
+        if self.is_disabled() and self.__has_token_in_each_input():
             self.__enable()
             return True
 
         return False
-
-    def enabled(self):
-        return self.__state == TState.ENABLED
-
-    def disabled(self):
-        return self.__state == TState.DISABLED
-
-    def firing(self):
-        return self.__state == TState.FIRING
-
-    def has_token_in_each_input(self):
-        for place in self.input_places:
-            if place.empty():  # Number of tokens available
-                return False
-
-        return True
 
     def start_firing(self):
         self.__fire()
@@ -49,6 +33,22 @@ class Transition(object):
             enabled_transitions.append(self)
 
         return enabled_transitions
+
+    def is_enabled(self):
+        return self.__state == TState.ENABLED
+
+    def is_disabled(self):
+        return self.__state == TState.DISABLED
+
+    def is_firing(self):
+        return self.__state == TState.FIRING
+
+    def __has_token_in_each_input(self):
+        for place in self.input_places:
+            if place.empty():  # Number of tokens available
+                return False
+
+        return True
 
     def __enable(self):
         assert self.__state is not TState.ENABLED, \
