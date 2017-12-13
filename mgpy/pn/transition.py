@@ -14,6 +14,7 @@ class Transition(object):
         self.__state = TState.DISABLED
         self.input_places = []
         self.output_places = []
+        self.dependents = []
 
     def enable(self):
         assert self.__state is not TState.ENABLED, \

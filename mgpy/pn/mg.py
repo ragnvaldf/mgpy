@@ -7,7 +7,6 @@ class MarkedGraph(object):
     def __init__(self, actions):
         self.transitions = [Transition(action, idx) for idx, action in enumerate(actions)]
         self.places = []  # [place_idx] = place
-        self.dependents = [[] for _ in range(len(actions))]  # [dependency_idx] = [dependent_idx1...]
 
     def build(self):
         for transition in self.transitions:
@@ -15,9 +14,9 @@ class MarkedGraph(object):
                 if isinstance(precondition, SimplePreCondition):
                     place = Place(precondition.name)
 
-                    dependency_idx = [transition.action.func for transition in self.transitions].index(precondition.func)
-                    self.dependents[dependency_idx].append(transition.idx)
-                    self.transitions[dependency_idx].output_places.append(place)
+                    depending_transition = self.__find_transition_by_func(precondition.func)
+                    depending_transition.dependents.append(transition)
+                    depending_transition.output_places.append(place)
                 elif isinstance(precondition, SiphonPreCondition):
                     place = InitialPlace(precondition)
 
@@ -44,13 +43,11 @@ class MarkedGraph(object):
         return [transition for transition in self.transitions if transition.enabled()]
 
     def get_transitions_enabled_after(self, transition):
-        enableable = []
+        enableable = [depending_transition for depending_transition in transition.dependents
+                      if depending_transition.disabled() and self.__can_fire(depending_transition)]
+
         if self.__can_fire(transition):
             enableable.append(transition)
-
-        for dependent_idx in self.dependents[transition.idx]:
-            if self.transitions[dependent_idx].disabled() and self.__can_fire(self.transitions[dependent_idx]):
-                enableable.append(self.transitions[dependent_idx])
 
         return enableable
 
@@ -60,3 +57,8 @@ class MarkedGraph(object):
                 return False
 
         return True
+
+    def __find_transition_by_func(self, func):
+        for transition in self.transitions:
+            if transition.action.func == func:
+                return transition
