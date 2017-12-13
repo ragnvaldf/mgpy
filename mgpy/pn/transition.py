@@ -12,6 +12,8 @@ class Transition(object):
         self.action = action
         self.idx = transition_idx
         self.__state = TState.DISABLED
+        self.input_places = []
+        self.output_places = []
 
     def enable(self):
         assert self.__state is not TState.ENABLED, \
