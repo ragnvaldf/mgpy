@@ -9,7 +9,6 @@ class PN(object):
         return self.graph.get_enabled_transitions()
 
     def start_firing(self, transition_idx):
-        assert self.graph.get_transition_state(transition_idx) == TState.ENABLED
         self.graph.set_transition_state(transition_idx, TState.FIRING)
 
         input_places = self.graph.get_input_places(transition_idx)
@@ -19,7 +18,6 @@ class PN(object):
         return func, tokens
 
     def complete_firing(self, transition_idx, token):
-        assert self.graph.get_transition_state(transition_idx) == TState.FIRING
         output_places = self.graph.get_output_places(transition_idx)
         [self.graph.deposit_token_in_place(token, place) for place in output_places]
 
