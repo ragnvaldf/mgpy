@@ -1,20 +1,29 @@
-from mgpy.pn.preconditions import SimplePreCondition, SiphonPreCondition
-from mgpy.pn.actions import Action, MockAction
+from .requirement import Requirement
+from .action import Action
+from .mockaction import MockAction
 
 
 class ActionBuilder(object):
     def __init__(self, func):
         assert callable(func)
-        self.__func = func  # Actions are transitions
-        self.__preconditions = []  # Preconditions are places
+        self .__func = func
+        self.__requirements = []
+        self.__provides = None
+        self.__limit = None
         self.__mock_object = None
 
-    def precondition(self, func, name=None):
-        assert func is not None
-        if name is None:
-            name = func.__name__
+    def requires(self, provider):
+        if callable(provider):
+            provider = provider.__name__
+        else:
+            assert isinstance(provider, str), 'Requirement must be identified by function or string'
 
-        self.__preconditions.append(SimplePreCondition(func, name))
+        self.__requirements.append(Requirement(provider))
+
+        return self
+
+    def provides(self, p):
+        self.__provides = p
 
         return self
 
@@ -24,16 +33,19 @@ class ActionBuilder(object):
         return self
 
     def once(self):
-        return self.max_runs(1)
+        return self.limit(1)
 
-    def max_runs(self, max_runs):
-        assert max_runs > 0
-        self.__preconditions.append(SiphonPreCondition(max_runs))
+    def limit(self, limit):
+        assert limit > 0
+        self.__limit = limit
 
         return self
 
     def build(self):
+        if self.__provides is None:
+            self.__provides = self.__func.__name__
+
         if self.__mock_object is None:
-            return Action(self.__func, self.__preconditions)
+            return Action(self.__func, self.__provides, self.__requirements, self.__limit)
         else:
-            return MockAction(self.__func, self.__preconditions, self.__mock_object)
+            return MockAction(self.__func, self.__provides, self.__requirements, self.__limit, self.__mock_object)
