@@ -7,20 +7,6 @@ class Action(object):
     def get_func(self):
         return self.func
 
-    def __hash__(self):
-        return hash((self.name, self.func, self.preconditions))
-
-    def __eq__(self, other):
-        if isinstance(self, other.__class__):
-            return (self.name, self.func, self.preconditions) == (other.name, other.func, other.preconditions)
-
-        return NotImplemented
-
-    def __str__(self):
-        return '{}({})'.format(self.func.__name__, '-'.join([p.__name__ for p in self.preconditions]))
-
-    __repr__ = __str__
-
 
 class MockAction(Action):
     def __init__(self, func, preconditions, mock):
