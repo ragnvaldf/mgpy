@@ -15,6 +15,9 @@ class Transition(object):
 
         return False
 
+    def get_state(self):
+        return self.__state
+
     def is_enabled(self):
         return self.__state == TState.ENABLED
 

@@ -14,6 +14,9 @@ class Action(object):
     def provides(self, requirement):
         return self.__provides == requirement.provider
 
+    def get_provides(self):
+        return self.__provides
+
     def requirements(self):
         return self.__requirements
 
