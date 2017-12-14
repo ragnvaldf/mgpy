@@ -12,6 +12,15 @@ class ActionBuilder(object):
         self.__limit = None
         self.__mock_object = None
 
+    def read_annotations(self):
+        for k, v in self.__func.__annotations__.items():
+            if k == 'return':
+                self.provides(v)
+            else:
+                self.requires(v)
+
+        return self
+
     def requires(self, provider):
         if callable(provider):
             provider = provider.__name__
