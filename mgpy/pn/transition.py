@@ -24,30 +24,30 @@ class Transition(object):
     def is_firing(self):
         return self.__state == TState.FIRING
 
+    def fire(self):
+        assert self.__state is TState.ENABLED, \
+            'Illegal state change for transition {}: {} -> {}'\
+            .format(self.action.name, str(self.__state), str(TState.FIRING))
+        self.__state = TState.FIRING
+
+    def disable(self):
+        assert self.__state is TState.FIRING, \
+            'Illegal state change for transition {}: {} -> {}'\
+            .format(self.action.name, str(self.__state), str(TState.DISABLED))
+        self.__state = TState.DISABLED
+
+    def __enable(self):
+        assert self.__state is not TState.ENABLED, \
+            'Illegal state change for transition {}: {} -> {}'\
+            .format(self.action.name, str(self.__state), str(TState.ENABLED))
+        self.__state = TState.ENABLED
+
     def __has_token_in_each_input(self):
         for place in self.input_places:
             if place.empty():  # Number of tokens available
                 return False
 
         return True
-
-    def __enable(self):
-        assert self.__state is not TState.ENABLED, \
-            'Illegal state change for transition {}: {} -> {}'\
-                .format(self.action.name, str(self.__state), str(TState.ENABLED))
-        self.__state = TState.ENABLED
-
-    def disable(self):
-        assert self.__state is TState.FIRING, \
-            'Illegal state change for transition {}: {} -> {}'\
-                .format(self.action.name, str(self.__state), str(TState.DISABLED))
-        self.__state = TState.DISABLED
-
-    def fire(self):
-        assert self.__state is TState.ENABLED, \
-            'Illegal state change for transition {}: {} -> {}'\
-                .format(self.action.name, str(self.__state), str(TState.FIRING))
-        self.__state = TState.FIRING
 
 
 class TState(IntEnum):
