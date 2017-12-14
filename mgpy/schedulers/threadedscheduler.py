@@ -3,7 +3,7 @@ from threading import Thread, Condition
 
 
 class ThreadedScheduler(Scheduler):
-    def __init__(self, pn, thread_count, **kwargs):
+    def __init__(self, pn, thread_count=4, **kwargs):
         Scheduler.__init__(self, pn, **kwargs)
         self.alive = True
         self.threads = [Thread(group=None, target=self.__run) for _ in range(thread_count)]
