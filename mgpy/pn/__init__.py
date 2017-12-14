@@ -1,4 +1,4 @@
-from .pn import PN
+from .pn import PN, start_firing, complete_firing
 from .requirement import Requirement
 from .actionbuilder import ActionBuilder
 from .action import Action

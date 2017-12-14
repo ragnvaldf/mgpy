@@ -1,4 +1,5 @@
 import json
+from ..pn import start_firing, complete_firing
 
 
 class Scheduler(object):
@@ -7,7 +8,7 @@ class Scheduler(object):
         self._print_all_states_full = print_all_states_full
 
     def _start_firing(self, transition):
-        func, params = transition.start_firing()
+        func, params = start_firing(transition)
 
         self.__print_state_full()
 
@@ -21,7 +22,7 @@ class Scheduler(object):
         return token
 
     def _complete_firing(self, transition, token):
-        new_enabled = transition.complete_firing(token)
+        new_enabled = complete_firing(transition, token)
 
         self.__print_state_full()
 

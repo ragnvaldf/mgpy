@@ -15,25 +15,6 @@ class Transition(object):
 
         return False
 
-    def start_firing(self):
-        self.__fire()
-        func = self.action.get_func()
-        tokens = dict([pair for pair in [place.remove_token() for place in self.input_places]
-                       if len(pair) == 2])
-
-        return func, tokens
-
-    def complete_firing(self, token):
-        self.__disable()
-        [place.add_token(token) for place in self.output_places]
-        enabled_transitions = [place.output_transition for place in self.output_places
-                               if place.output_transition.try_enable()]
-
-        if self.try_enable():
-            enabled_transitions.append(self)
-
-        return enabled_transitions
-
     def is_enabled(self):
         return self.__state == TState.ENABLED
 
@@ -56,13 +37,13 @@ class Transition(object):
                 .format(self.action.name, str(self.__state), str(TState.ENABLED))
         self.__state = TState.ENABLED
 
-    def __disable(self):
+    def disable(self):
         assert self.__state is TState.FIRING, \
             'Illegal state change for transition {}: {} -> {}'\
                 .format(self.action.name, str(self.__state), str(TState.DISABLED))
         self.__state = TState.DISABLED
 
-    def __fire(self):
+    def fire(self):
         assert self.__state is TState.ENABLED, \
             'Illegal state change for transition {}: {} -> {}'\
                 .format(self.action.name, str(self.__state), str(TState.FIRING))
