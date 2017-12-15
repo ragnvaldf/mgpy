@@ -1,7 +1,6 @@
 from mgpy import MGBuilder, ActionBuilder, ThreadedScheduler
 
 
-
 def get2() -> 'two':
     return 2
 
@@ -11,7 +10,7 @@ def get3() -> 'three':
 
 
 def get5() -> 'five':
-    return 5
+    assert None, 'Unfinished method'
 
 
 def get7() -> 'seven':
@@ -27,10 +26,11 @@ def get20(two: 'two', five: 'five') -> 'twenty':
 
 
 def get21(three: 'three', seven: 'seven') -> 'twentyone':
-    return three*seven
+    assert None, 'Unfinished method'
 
 
-def print_result(eighteen: 'eighteen', twenty: 'twenty', twentyone: 'twentyone'):
+def print_result(seven: 'seven', eighteen: 'eighteen', twenty: 'twenty', twentyone: 'twentyone'):
+    print('Seven:%d' % seven)
     print('Eighteen:%d' % eighteen)
     print('Twenty:%d' % twenty)
     print('Twentyone:%d' % twentyone)
@@ -40,11 +40,11 @@ def make_pn():
     return MGBuilder()\
         .add(ActionBuilder(get2).read_annotations().once().build())\
         .add(ActionBuilder(get3).read_annotations().once().build())\
-        .add(ActionBuilder(get5).read_annotations().once().build())\
+        .add(ActionBuilder(get5).read_annotations().once().mock(5).build())\
         .add(ActionBuilder(get7).read_annotations().once().build())\
         .add(ActionBuilder(get18).read_annotations().build())\
         .add(ActionBuilder(get20).read_annotations().build())\
-        .add(ActionBuilder(get21).read_annotations().build())\
+        .add(ActionBuilder(get21).read_annotations().mock(21).build())\
         .add(ActionBuilder(print_result).read_annotations().build())\
         .build()
 
