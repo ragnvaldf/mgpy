@@ -1,7 +1,10 @@
+from .functiontransition import FunctionTransition
+
+
 class Action(object):
-    def __init__(self, func, provides, requirements, limit):
+    def __init__(self, func, product, requirements, limit):
         self.__func = func
-        self.__provides = provides
+        self.__product = product
         self.__requirements = requirements
         self.__limit = limit
 
@@ -12,10 +15,10 @@ class Action(object):
         return self.__func
 
     def provides(self, requirement):
-        return self.__provides == requirement.provider
+        return self.__product == requirement.provider
 
-    def get_provides(self):
-        return self.__provides
+    def product(self):
+        return self.__product
 
     def requirements(self):
         return self.__requirements
@@ -25,3 +28,6 @@ class Action(object):
 
     def limit(self):
         return self.__limit
+
+    def to_transition(self):
+        return FunctionTransition(self)

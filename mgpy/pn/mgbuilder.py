@@ -1,5 +1,5 @@
 from .pn import PN
-from .transition import Transition
+from .functiontransition import FunctionTransition
 from .place import Place
 from .initialplace import InitialPlace
 
@@ -14,18 +14,18 @@ class MGBuilder(object):
         return self
 
     def build(self):
-        transitions = [Transition(action) for action in self.actions]
+        transitions = [action.to_transition() for action in self.actions]
         for transition in transitions:
             for requirement in transition.action.requirements():
                 place = Place(requirement.provider, transition)
 
                 providers = [t for t in transitions if t.action.provides(requirement)]
                 assert len(providers) == 1, 'Exactly 1 provider must exist for {}'.format(requirement.provider)
-                providers[0].output_places.append(place)
+                providers[0].add_output_place(place)
 
-                transition.input_places.append(place)
+                transition.add_input_place(place)
             if transition.action.has_limit():
-                transition.input_places.append(InitialPlace(transition))
+                transition.add_input_place(InitialPlace(transition))
             transition.try_enable()
 
         return PN(transitions)

@@ -2,8 +2,8 @@ from .action import Action
 
 
 class MockAction(Action):
-    def __init__(self, func, provides, requirements, limit, mock):
-        Action.__init__(self, func, provides, requirements, limit)
+    def __init__(self, func, product, requirements, limit, mock):
+        Action.__init__(self, func, product, requirements, limit)
         self.__mock = mock
 
     def get_func(self):

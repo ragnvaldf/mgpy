@@ -2,55 +2,56 @@ from enum import IntEnum
 
 
 class Transition(object):
-    def __init__(self, action):
-        self.action = action
-        self.input_places = []
-        self.output_places = []
+    def __init__(self, name):
+        self.__input_places = []
+        self.__output_places = []
         self.__state = TState.DISABLED
+        self.__name = name
 
-    def try_enable(self):
-        if self.is_disabled() and self.__has_token_in_each_input():
-            self.__enable()
-            return True
+    def add_input_place(self, place):
+        self.__input_places.append(place)
 
-        return False
+    def add_output_place(self, place):
+        self.__output_places.append(place)
 
-    def get_state(self):
+    def input_places(self):
+        return self.__input_places
+
+    def output_places(self):
+        return self.__output_places
+
+    def state(self):
         return self.__state
 
+    def name(self):
+        return self.__name
+
     def is_enabled(self):
-        return self.__state == TState.ENABLED
+        return self.__state is TState.ENABLED
 
     def is_disabled(self):
-        return self.__state == TState.DISABLED
+        return self.__state is TState.DISABLED
 
     def is_firing(self):
-        return self.__state == TState.FIRING
+        return self.__state is TState.FIRING
 
     def fire(self):
         assert self.__state is TState.ENABLED, \
             'Illegal state change for transition {}: {} -> {}'\
-            .format(self.action.name, str(self.__state), str(TState.FIRING))
+            .format(self.__name, str(self.__state), str(TState.FIRING))
         self.__state = TState.FIRING
 
     def disable(self):
         assert self.__state is TState.FIRING, \
             'Illegal state change for transition {}: {} -> {}'\
-            .format(self.action.name, str(self.__state), str(TState.DISABLED))
+            .format(self.__name, str(self.__state), str(TState.DISABLED))
         self.__state = TState.DISABLED
 
-    def __enable(self):
+    def enable(self):
         assert self.__state is not TState.ENABLED, \
             'Illegal state change for transition {}: {} -> {}'\
-            .format(self.action.name, str(self.__state), str(TState.ENABLED))
+            .format(self.__name, str(self.__state), str(TState.ENABLED))
         self.__state = TState.ENABLED
-
-    def __has_token_in_each_input(self):
-        for place in self.input_places:
-            if place.empty():  # Number of tokens available
-                return False
-
-        return True
 
 
 class TState(IntEnum):

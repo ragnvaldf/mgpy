@@ -11,13 +11,13 @@ class PN(object):
     def get_state_dict(self):
         d = {}
         for transition in self.transitions:
-            d[transition.action.get_provides()] = {}
-            d[transition.action.get_provides()]['State'] = str(transition.get_state())
-            for place in transition.input_places:
+            d[transition.name()] = {}
+            d[transition.name()]['State'] = str(transition.state())
+            for place in transition.input_places():
                 if isinstance(place, InitialPlace):
-                    d[transition.action.get_provides()]['initial'] = place.token_count()
+                    d[transition.name()]['initial'] = place.token_count()
                 else:
-                    d[transition.action.get_provides()][place.provided] = place.token_count()
+                    d[transition.name()][place.provided] = place.token_count()
 
         return d
 
@@ -25,19 +25,29 @@ class PN(object):
 def start_firing(transition):
     transition.fire()
     func = transition.action.get_func()
-    tokens = dict([pair for pair in [place.remove_token() for place in transition.input_places]
-                   if len(pair) == 2])
+    tokens = consume_tokens(transition.input_places())
 
     return func, tokens
 
 
 def complete_firing(transition, token):
     transition.disable()
-    [place.add_token(token) for place in transition.output_places]
-    enabled_transitions = [place.output_transition for place in transition.output_places
-                           if place.output_transition.try_enable()]
+    deposit(token, transition.output_places())
 
+    enabled_transitions = try_enable_output_transitions(transition.output_places())
     if transition.try_enable():
         enabled_transitions.append(transition)
 
     return enabled_transitions
+
+
+def deposit(token, output_places):
+    [place.add_token(token) for place in output_places]
+
+
+def consume_tokens(input_places):
+    return dict([pair for pair in [place.remove_token() for place in input_places] if len(pair) == 2])
+
+
+def try_enable_output_transitions(list_of_places):
+    return [place.output_transition for place in list_of_places if place.output_transition.try_enable()]
