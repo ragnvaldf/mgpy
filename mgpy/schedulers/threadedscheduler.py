@@ -45,5 +45,4 @@ class ThreadedScheduler(Scheduler):
             token = self._run_function(func, params)
 
             with self.cv:
-                new_enabled = self._complete_firing(transition, token)
-                self.enabled_transitions.extend(new_enabled)
+                self._complete_firing(transition, token)

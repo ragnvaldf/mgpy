@@ -4,10 +4,10 @@ class Place(object):
         self.output_transition = output_transition
         self.__tokens = []
 
-    def add_token(self, token):
+    def deposit(self, token):
         self.__tokens.append(token)
 
-    def remove_token(self):
+    def consume(self):
         assert len(self.__tokens) > 0, 'Tried removing non-existing token for {} ({})'\
             .format(self.output_transition.action.real_func().__name__, self.provided)
 

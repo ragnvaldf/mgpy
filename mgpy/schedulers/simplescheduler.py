@@ -14,7 +14,6 @@ class SimpleScheduler(Scheduler):
             func, params = self._start_firing(transition)
             token = self._run_function(func, params)
 
-            new_enabled = self._complete_firing(transition, token)
-            active.extend(new_enabled)
+            self._complete_firing(transition, token)
 
         return self
