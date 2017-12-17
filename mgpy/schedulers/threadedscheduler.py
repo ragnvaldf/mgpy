@@ -5,44 +5,43 @@ from threading import Thread, Condition
 class ThreadedScheduler(Scheduler):
     def __init__(self, pn, thread_count=4, **kwargs):
         Scheduler.__init__(self, pn, **kwargs)
-        self.alive = True
-        self.threads = [Thread(group=None, target=self.__run) for _ in range(thread_count)]
-        self.waiting_threads = 0
-        self.enabled_transitions = self._pn.get_enabled_transitions()
-        self.cv = Condition()
+        self.__alive = True
+        self.__threads = [Thread(group=None, target=self.__run) for _ in range(thread_count)]
+        self.__waiting_threads = 0
+        self.__cv = Condition()
 
     def run(self):
-        [thread.start() for thread in self.threads]
+        [thread.start() for thread in self.__threads]
 
         return self
 
     def join(self):
-        [thread.join() for thread in self.threads]
+        [thread.join() for thread in self.__threads]
 
         return self
 
     def __run(self):
-        while self.alive:
-            with self.cv:
-                if len(self.enabled_transitions) == 0:
-                    self.waiting_threads += 1
-                    if self.waiting_threads == len(self.threads):
-                        self.alive = False
-                        self.cv.notifyAll()
+        while self.__alive:
+            with self.__cv:
+                if not self._pn.has_enabled_transitions():
+                    self.__waiting_threads += 1
+                    if self.__waiting_threads == len(self.__threads):
+                        self.__alive = False
+                        self.__cv.notifyAll()
                         return
-                    self.cv.wait_for(lambda: len(self.enabled_transitions) > 0 or not self.alive)
-                    self.waiting_threads -= 1
+                    self.__cv.wait_for(lambda: self._pn.has_enabled_transitions() or not self.__alive)
+                    self.__waiting_threads -= 1
 
-                    if not self.alive:
+                    if not self.__alive:
                         return
 
-                transition = self.enabled_transitions.pop(0)
-                func, params = self._start_firing(transition)
+                transition = self._get_enabled_transition()
+                input_tokens = self._start_firing(transition)
 
-                if len(self.enabled_transitions) > 0:
-                    self.cv.notify()
+                if self._pn.has_enabled_transitions():
+                    self.__cv.notify()
 
-            token = self._run_function(func, params)
+            token = self._run_function(transition, input_tokens)
 
-            with self.cv:
+            with self.__cv:
                 self._complete_firing(transition, token)

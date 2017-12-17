@@ -24,8 +24,11 @@ class MGBuilder(object):
                 providers[0].add_output_place(place)
 
                 transition.add_input_place(place)
+
             if transition.action.has_limit():
                 transition.add_input_place(InitialPlace(transition))
-            transition.try_enable()
+
+            if transition.can_be_enabled():
+                transition.enable()
 
         return PN(transitions)

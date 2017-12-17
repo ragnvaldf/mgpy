@@ -3,10 +3,10 @@ from enum import IntEnum
 
 class Transition(object):
     def __init__(self, name):
+        self.__name = name
         self.__input_places = []
         self.__output_places = []
         self.__state = TState.DISABLED
-        self.__name = name
 
     def add_input_place(self, place):
         self.__input_places.append(place)
@@ -19,6 +19,16 @@ class Transition(object):
 
     def output_places(self):
         return self.__output_places
+
+    def can_be_enabled(self):
+        return not self.is_enabled() and self.__has_token_in_each_input()
+
+    def __has_token_in_each_input(self):
+        for place in self.input_places():
+            if place.empty():
+                return False
+
+        return True
 
     def state(self):
         return self.__state

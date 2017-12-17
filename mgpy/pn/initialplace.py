@@ -6,7 +6,7 @@ class InitialPlace(Place):
         Place.__init__(self, None, output_transition)
         [Place.deposit(self, None) for _ in range(output_transition.action.limit())]
 
-    def add_token(self, token):
+    def deposit(self, token):
         assert None, 'Initial place for {} cannot store tokens'\
             .format(self.output_transition.action.real_func().__name__)
 
