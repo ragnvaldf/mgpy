@@ -9,5 +9,6 @@ class MockAction(Action):
     def get_func(self):
         return self.__return_mock
 
+    # noinspection PyUnusedLocal
     def __return_mock(self, **kwargs):
         return self.__mock

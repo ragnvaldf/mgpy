@@ -2,8 +2,8 @@ from enum import IntEnum
 
 
 class Transition(object):
-    def __init__(self, name):
-        self.__name = name
+    def __init__(self, product):
+        self.__product = product
         self.__input_places = []
         self.__output_places = []
         self.__state = TState.DISABLED
@@ -33,8 +33,8 @@ class Transition(object):
     def state(self):
         return self.__state
 
-    def name(self):
-        return self.__name
+    def product(self):
+        return self.__product
 
     def is_enabled(self):
         return self.__state is TState.ENABLED
@@ -48,19 +48,19 @@ class Transition(object):
     def fire(self):
         assert self.__state is TState.ENABLED, \
             'Illegal state change for transition {}: {} -> {}'\
-            .format(self.__name, str(self.__state), str(TState.FIRING))
+            .format(self.__product, str(self.__state), str(TState.FIRING))
         self.__state = TState.FIRING
 
     def disable(self):
         assert self.__state is TState.FIRING, \
             'Illegal state change for transition {}: {} -> {}'\
-            .format(self.__name, str(self.__state), str(TState.DISABLED))
+            .format(self.__product, str(self.__state), str(TState.DISABLED))
         self.__state = TState.DISABLED
 
     def enable(self):
         assert self.__state is not TState.ENABLED, \
             'Illegal state change for transition {}: {} -> {}'\
-            .format(self.__name, str(self.__state), str(TState.ENABLED))
+            .format(self.__product, str(self.__state), str(TState.ENABLED))
         self.__state = TState.ENABLED
 
 

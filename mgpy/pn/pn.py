@@ -12,13 +12,13 @@ class PN(object):
     def get_state_dict(self):
         d = {}
         for transition in self.transitions:
-            d[transition.name()] = {}
-            d[transition.name()]['State'] = str(transition.state())
+            d[transition.product()] = {}
+            d[transition.product()]['State'] = str(transition.state())
             for place in transition.input_places():
                 if isinstance(place, InitialPlace):
-                    d[transition.name()]['initial'] = place.token_count()
+                    d[transition.product()]['initial'] = place.token_count()
                 else:
-                    d[transition.name()][place.provided] = place.token_count()
+                    d[transition.product()][place.provided] = place.token_count()
 
         return d
 

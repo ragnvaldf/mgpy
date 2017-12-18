@@ -1,3 +1,3 @@
 class Requirement(object):
-    def __init__(self, provider):
-        self.provider = provider
+    def __init__(self, product):
+        self.product = product
