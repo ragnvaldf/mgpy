@@ -20,13 +20,6 @@ class Scheduler(object):
 
         return input_tokens
 
-    def _run_function(self, transition, input_tokens):
-        token = transition.action.get_func()(**argument_dict_from_tokens(input_tokens))
-
-        self.__print_state_full()
-
-        return token
-
     def _complete_firing(self, transition, token):
         self._pn.deposit_token_in_output_places(token, transition)
         if transition.can_be_enabled():
@@ -39,7 +32,3 @@ class Scheduler(object):
     def __print_state_full(self):
         if self._print_all_states_full:
             print(json.dumps(self._pn.get_state_dict(), indent=4))
-
-
-def argument_dict_from_tokens(tokens):
-    return dict([pair for pair in tokens if len(pair) == 2])
