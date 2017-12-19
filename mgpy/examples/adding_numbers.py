@@ -51,7 +51,7 @@ def make_pn():
 
 def main():
     pn = make_pn()
-    scheduler = ThreadedScheduler(pn, print_all_states_full=False)
+    scheduler = ThreadedScheduler(pn, print_full_state_on_change=False, print_state_changes=False)
     scheduler.run()
     scheduler.join()
 

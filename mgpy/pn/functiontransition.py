@@ -3,7 +3,7 @@ from .transition import Transition
 
 class FunctionTransition(Transition):
     def __init__(self, product, func):
-        Transition.__init__(self, product)
+        Transition.__init__(self, '{} -> {}'.format(func.__name__, product))
         self.__product = product
         self.__func = func
 
