@@ -1,24 +1,18 @@
-from .initialplace import InitialPlace
-
-
 class PN(object):
     def __init__(self, transitions):
-        self.transitions = transitions
-        self.__enabled_transitions = [transition for transition in self.transitions if transition.is_enabled()]
+        self.__transitions = transitions
+        self.__enabled_transitions = [transition for transition in self.__transitions if transition.is_enabled()]
 
     def get_enabled_transitions(self):
         return self.__enabled_transitions
 
     def get_state_dict(self):
         d = {}
-        for transition in self.transitions:
-            d[transition.product()] = {}
-            d[transition.product()]['State'] = str(transition.state())
+        for transition in self.__transitions:
+            d[transition.name()] = {}
+            d[transition.name()]['State'] = str(transition.state())
             for place in transition.input_places():
-                if isinstance(place, InitialPlace):
-                    d[transition.product()]['initial'] = place.token_count()
-                else:
-                    d[transition.product()][place.provided] = place.token_count()
+                d[transition.name()][place.name()] = place.token_count()
 
         return d
 
@@ -44,8 +38,8 @@ class PN(object):
     def deposit(self, token, output_places):
         for place in output_places:
             place.deposit(token)
-            if place.output_transition.can_be_enabled():
-                self.enable(place.output_transition)
+            if place.output_transition().can_be_enabled():
+                self.enable(place.output_transition())
 
     def consume_tokens(self, input_places):
         return [place.consume() for place in input_places]

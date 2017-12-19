@@ -11,9 +11,6 @@ class Action(object):
     def real_func(self):
         return self.__func
 
-    def provides(self, requirement):
-        return self.__product == requirement.product
-
     def product(self):
         return self.__product
 
