@@ -10,8 +10,6 @@ class SimpleScheduler(Scheduler):
             transition = self._get_enabled_transition()
 
             input_tokens = self._start_firing(transition)
-            output_token = transition.run_function(input_tokens)
-
-            self._complete_firing(transition, output_token)
+            transition.run_function(input_tokens, self._complete_firing)
 
         return self

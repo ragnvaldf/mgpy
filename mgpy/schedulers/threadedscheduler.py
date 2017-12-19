@@ -41,7 +41,8 @@ class ThreadedScheduler(Scheduler):
                 if self._pn.has_enabled_transitions():
                     self.__cv.notify()
 
-            output_token = transition.run_function(input_tokens)
+            transition.run_function(input_tokens, self.complete_firing_with_lock)
 
-            with self.__cv:
-                self._complete_firing(transition, output_token)
+    def complete_firing_with_lock(self, transition, output_token):
+        with self.__cv:
+            self._complete_firing(transition, output_token)

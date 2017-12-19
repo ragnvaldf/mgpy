@@ -6,8 +6,9 @@ class FunctionTransition(Transition):
         Transition.__init__(self, product)
         self.func = func
 
-    def run_function(self, input_tokens):
-        return self.func(**argument_dict_from_tokens(input_tokens))
+    def run_function(self, input_tokens, firing_complete):
+        output_token = self.func(**argument_dict_from_tokens(input_tokens))
+        firing_complete(self, output_token)
 
 
 def argument_dict_from_tokens(tokens):
