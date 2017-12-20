@@ -1,18 +1,19 @@
 from .pn import PN
+from .action import Action
 from .functiontransition import FunctionTransition
-from .deadtransition import DeadTransition
-from .initialplace import InitialPlace
-from .functionplace import FunctionPlace
+from .transition import Transition
+from .place import Place
 
 
 class MGBuilder(object):
-    def __init__(self):
+    def __init__(self, debug=False):
+        self.__debug = debug
         self.__actions = []
-        self.__function_transitions = []
-        self.__initial_places = []
-        self.__requirement_places = []
+        self.__transitions = []
+        self.__places = []
 
     def add(self, action):
+        assert isinstance(action, Action)
         self.__actions.append(action)
 
         return self
@@ -21,34 +22,44 @@ class MGBuilder(object):
         self.__make_places()
         self.__make_arcs()
 
-        for transition in self.__function_transitions:
+        for transition in self.__transitions:
             if transition.can_be_enabled():
                 transition.enable()
 
-        return PN(self.__function_transitions)
+        return PN(self.__transitions)
 
     def __make_places(self):
         for action in self.__actions:
-            output_transition = FunctionTransition(action.product(), action.get_func())
-            self.__function_transitions.append(output_transition)
+            nodes = action.get_nodes(self.__find_transition_satisfying)
 
-            if action.has_limit():
-                dead_transition = DeadTransition()
-                initial_place = InitialPlace(dead_transition, output_transition, action.limit())
-                self.__initial_places.append(initial_place)
+            for key, value in nodes.items():
+                if isinstance(value, Transition):
+                    self.__transitions.append(value)
 
-            for requirement in action.requirements():
-                providers = [t for t in self.__function_transitions if requirement.satisfied_by(t.product())]
-                assert len(providers) == 1, 'Exactly 1 provider must exist for {}'.format(requirement.product)
-                input_transition = providers[0]
+                elif isinstance(value, Place):
+                    self.__places.append(value)
 
-                requirement_place = FunctionPlace(input_transition, output_transition, requirement.product)
-                self.__requirement_places.append(requirement_place)
+                else:
+                    assert key == 'required_places'
+                    for required_place in value:
+                        assert isinstance(required_place, Place)
+                        self.__places.append(required_place)
+
+                        if self.__debug:
+                            print('Created {} ({})'.format(required_place.__class__.__name__, required_place.name()))
+                    continue
+
+                if self.__debug:
+                    print('Created {} ({})'.format(value.__class__.__name__, value.name()))
+
+    def __find_transition_satisfying(self, requirement):
+        providers = [t for t in self.__transitions
+                     if isinstance(t, FunctionTransition) and requirement.satisfied_by(t.product())]
+        assert len(providers) == 1, 'Exactly 1 provider must exist for {}'.format(requirement.product)
+
+        return providers[0]
 
     def __make_arcs(self):
-        for place in self.__requirement_places:
-            place.input_transition().add_output_place(place)
-            place.output_transition().add_input_place(place)
-        for place in self.__initial_places:
+        for place in self.__places:
             place.input_transition().add_output_place(place)
             place.output_transition().add_input_place(place)

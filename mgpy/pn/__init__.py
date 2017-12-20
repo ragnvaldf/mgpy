@@ -1,8 +1,6 @@
 from .pn import PN
 from .requirement import Requirement
 from .actionbuilder import ActionBuilder
-from .action import Action
-from .mockaction import MockAction
 from .transition import Transition, TState
 from .functiontransition import FunctionTransition
 from .mgbuilder import MGBuilder

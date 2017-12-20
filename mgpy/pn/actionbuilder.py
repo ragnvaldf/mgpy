@@ -1,6 +1,5 @@
 from .requirement import Requirement
-from .action import Action
-from .mockaction import MockAction
+from .functionaction import FunctionAction
 
 
 class ActionBuilder(object):
@@ -54,7 +53,8 @@ class ActionBuilder(object):
         if self.__provides is None:
             self.__provides = self.__func.__name__
 
-        if self.__mock_object is None:
-            return Action(self.__func, self.__provides, self.__requirements, self.__limit)
-        else:
-            return MockAction(self.__func, self.__provides, self.__requirements, self.__limit, self.__mock_object)
+        action = FunctionAction(self.__func, self.__provides, self.__requirements, self.__limit)
+        if self.__mock_object is not None:
+            action.set_mock(self.__mock_object)
+
+        return action
