@@ -1,5 +1,5 @@
 from .action import Action
-from mgpy.pn.place import FunctionPlace
+from ..place import FunctionPlace
 
 
 class ConsumerAction(Action):

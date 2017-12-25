@@ -1,7 +1,7 @@
 from .pn import PN
-from mgpy.pn.action import Action
-from mgpy.pn.transition import Transition, FunctionTransition
-from mgpy.pn.place import Place
+from ..action import Action
+from ..transition import Transition, FunctionTransition
+from ..place import Place
 
 
 class MarkedGraph(object):

@@ -1,4 +1,4 @@
-from mgpy.pn.place import Place
+from .place import Place
 
 
 class FunctionPlace(Place):

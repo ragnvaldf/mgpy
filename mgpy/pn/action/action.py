@@ -1,4 +1,4 @@
-from mgpy.pn.transition.functiontransition import FunctionTransition
+from ..transition import FunctionTransition
 
 
 class Action(object):
