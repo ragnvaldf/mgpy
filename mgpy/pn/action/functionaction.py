@@ -1,6 +1,6 @@
 from .consumeraction import ConsumerAction
-from .deadtransition import DeadTransition
-from .initialplace import InitialPlace
+from mgpy.pn.transition import DeadTransition
+from mgpy.pn.place import InitialPlace
 
 
 class FunctionAction(ConsumerAction):

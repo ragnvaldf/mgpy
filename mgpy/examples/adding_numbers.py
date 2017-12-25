@@ -1,4 +1,4 @@
-from mgpy import MGBuilder, ActionBuilder, ThreadedScheduler
+from mgpy import MarkedGraph, ActionBuilder, ThreadedScheduler
 
 
 def get2() -> 'two':
@@ -37,7 +37,7 @@ def print_result(seven: 'seven', eighteen: 'eighteen', twenty: 'twenty', twentyo
 
 
 def make_pn():
-    return MGBuilder()\
+    return MarkedGraph()\
         .add(ActionBuilder(get2).read_annotations().once().build())\
         .add(ActionBuilder(get3).read_annotations().once().build())\
         .add(ActionBuilder(get5).read_annotations().once().mock(5).build())\

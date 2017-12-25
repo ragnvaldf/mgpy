@@ -1,11 +1,10 @@
 from .pn import PN
-from .action import Action
-from .functiontransition import FunctionTransition
-from .transition import Transition
-from .place import Place
+from mgpy.pn.action import Action
+from mgpy.pn.transition import Transition, FunctionTransition
+from mgpy.pn.place import Place
 
 
-class MGBuilder(object):
+class MarkedGraph(object):
     def __init__(self, debug=False):
         self.__debug = debug
         self.__actions = []

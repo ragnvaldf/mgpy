@@ -1,4 +1,4 @@
-from .place import Place
+from mgpy.pn.place import Place
 
 
 class InitialPlace(Place):
