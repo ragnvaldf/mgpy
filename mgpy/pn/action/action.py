@@ -1,4 +1,5 @@
 from ..transition import FunctionTransition
+from ..state import Provide
 
 
 class Action(object):
@@ -23,7 +24,7 @@ class Action(object):
 
     # noinspection PyUnusedLocal
     def __mock(self, **kwargs):
-        return self.__mock_object
+        return Provide((self.__product, self.__mock_object))
 
     def get_nodes(self):
         return {

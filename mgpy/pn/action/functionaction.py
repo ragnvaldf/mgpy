@@ -1,6 +1,7 @@
 from .consumeraction import ConsumerAction
 from ..transition import DeadTransition
-from ..place import InitialPlace
+from ..place import Place
+from ..state import Token
 
 
 class FunctionAction(ConsumerAction):
@@ -18,6 +19,9 @@ class FunctionAction(ConsumerAction):
         nodes = super().get_nodes(find_transition_satisfying)
         if self.has_limit():
             nodes['input_transition'] = DeadTransition()
-            nodes['initial_place'] = InitialPlace(nodes['input_transition'], nodes['output_transition'], self.limit())
+            initial_place = Place(nodes['input_transition'], nodes['output_transition'],
+                                           'limit={}'.format(self.limit()))
+            [initial_place.deposit(Token()) for _ in range(self.limit())]
+            nodes['initial_place'] = initial_place
 
         return nodes

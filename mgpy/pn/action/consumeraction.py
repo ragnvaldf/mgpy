@@ -1,5 +1,5 @@
 from .action import Action
-from ..place import FunctionPlace
+from ..place import Place
 
 
 class ConsumerAction(Action):
@@ -16,7 +16,7 @@ class ConsumerAction(Action):
         required_places = []
         for requirement in self.requirements():
             input_transition = find_transition_satisfying(requirement)
-            requirement_place = FunctionPlace(input_transition, nodes['output_transition'], requirement.product)
+            requirement_place = Place(input_transition, nodes['output_transition'], requirement.product)
             required_places.append(requirement_place)
 
         if len(required_places) > 0:

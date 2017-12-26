@@ -1,4 +1,5 @@
 from .transition import Transition
+from ..state import ColoredToken
 
 
 class FunctionTransition(Transition):
@@ -19,4 +20,5 @@ class FunctionTransition(Transition):
 
 
 def argument_dict_from_tokens(tokens):
-    return dict([pair for pair in tokens if len(pair) == 2])
+    return dict([(var_name, var_value)
+                 for token in tokens if isinstance(token, ColoredToken) for (var_name, var_value) in token])

@@ -1,3 +1,6 @@
+from ..state import Token
+
+
 class Place(object):
     def __init__(self, input_transition, output_transition, name):
         self.__name = name
@@ -9,6 +12,7 @@ class Place(object):
         return self.__name
 
     def deposit(self, token):
+        assert isinstance(token, Token)
         self.__tokens.append(token)
 
     def consume(self):

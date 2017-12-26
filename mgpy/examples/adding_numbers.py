@@ -1,12 +1,12 @@
-from mgpy import MarkedGraph, ActionBuilder, ThreadedScheduler
+from mgpy import MarkedGraph, ActionBuilder, ThreadedScheduler, Provide
 
 
 def get2() -> 'two':
-    return 2
+    return Provide(('two', 2))
 
 
 def get3() -> 'three':
-    return 3
+    return Provide(('three', 3))
 
 
 def get5() -> 'five':
@@ -14,15 +14,15 @@ def get5() -> 'five':
 
 
 def get7() -> 'seven':
-    return 7
+    return Provide(('seven', 7))
 
 
 def get18(two: 'two', three: 'three') -> 'eighteen':
-    return two*three*three
+    return Provide(('eighteen', two*three*three))
 
 
 def get20(two: 'two', five: 'five') -> 'twenty':
-    return two*two*five
+    return Provide(('twenty', two*two*five))
 
 
 def get21(three: 'three', seven: 'seven') -> 'twentyone':
