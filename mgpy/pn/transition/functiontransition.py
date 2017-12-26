@@ -20,5 +20,6 @@ class FunctionTransition(Transition):
 
 
 def argument_dict_from_tokens(tokens):
-    return dict([(var_name, var_value)
-                 for token in tokens if isinstance(token, ColoredToken) for (var_name, var_value) in token.colors()])
+    return {name: value
+            for colored_token in filter(lambda token: isinstance(token, ColoredToken), tokens)
+            for (name, value) in colored_token.colors()}
