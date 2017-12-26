@@ -21,4 +21,4 @@ class FunctionTransition(Transition):
 
 def argument_dict_from_tokens(tokens):
     return dict([(var_name, var_value)
-                 for token in tokens if isinstance(token, ColoredToken) for (var_name, var_value) in token])
+                 for token in tokens if isinstance(token, ColoredToken) for (var_name, var_value) in token.colors()])
