@@ -1,7 +1,7 @@
 class PN(object):
     def __init__(self, transitions):
         self.__transitions = transitions
-        self.__enabled_transitions = [transition for transition in self.__transitions if transition.is_enabled()]
+        self.__enabled_transitions = list(filter(lambda transition: transition.is_enabled(), self.__transitions))
 
     def get_enabled_transitions(self):
         return self.__enabled_transitions
